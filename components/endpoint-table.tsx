@@ -37,7 +37,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { STATUS_LABELS, STATUS_COLORS } from "@/lib/constants/endpoints"
-import { Channel } from "@/lib/channels"
+import { Channel, CHANNEL_LABELS } from "@/lib/channels"
 import { EndpointExample } from "@/components/endpoint-example"
 import { useRouter } from "next/navigation"
 import { deleteEndpoint, toggleEndpointStatus, testEndpoint } from "@/lib/services/endpoints"
@@ -211,6 +211,7 @@ export function EndpointTable({
               <TableHead className="w-[50px]"></TableHead>
               <TableHead>ID</TableHead>
               <TableHead>名称</TableHead>
+              <TableHead>渠道类型</TableHead>
               <TableHead>推送渠道</TableHead>
               <TableHead>消息模版</TableHead>
               <TableHead>状态</TableHead>
@@ -221,7 +222,7 @@ export function EndpointTable({
           <TableBody>
             {filteredEndpoints.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={9} className="h-24 text-center text-muted-foreground">
                   {searchQuery ? "未找到匹配的接口" : "暂无接口"}
                 </TableCell>
               </TableRow>
@@ -238,6 +239,7 @@ export function EndpointTable({
                     </TableCell>
                     <TableCell className="font-mono">{endpoint.id}</TableCell>
                     <TableCell>{endpoint.name}</TableCell>
+                    <TableCell>{channel && CHANNEL_LABELS[channel.type]}</TableCell>
                     <TableCell>{channel?.name}</TableCell>
                     <TableCell>
                       <Popover>
@@ -357,4 +359,4 @@ export function EndpointTable({
       />
     </div>
   )
-} 
+}
