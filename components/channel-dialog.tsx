@@ -190,4 +190,4 @@ export function ChannelDialog({ mode = "create", channel }: ChannelDialogProps) 
       </DialogContent>
     </Dialog>
   )
-} 
+}

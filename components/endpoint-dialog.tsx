@@ -27,7 +27,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Plus, Loader2 } from "lucide-react"
-import { useState } from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { insertEndpointSchema } from "@/lib/db/schema/endpoints"
@@ -35,9 +35,10 @@ import { Endpoint, NewEndpoint } from "@/lib/db/schema/endpoints"
 import { useToast } from "@/components/ui/use-toast"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Channel, ChannelType } from "@/lib/channels"
-import { CHANNEL_TEMPLATES } from "@/lib/channels"
+import { CHANNEL_TEMPLATES, CHANNEL_LABELS } from "@/lib/channels"
 import { TemplateFields } from "@/components/template-fields"
 import { createEndpoint, updateEndpoint } from "@/lib/services/endpoints"
+import { SelectGroup, SelectLabel } from "@/components/ui/select"
 
 interface EndpointDialogProps {
   mode?: "create" | "edit"
@@ -182,11 +183,29 @@ export function EndpointDialog({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {channels.map((channel) => (
-                            <SelectItem key={channel.id} value={channel.id}>
-                              {channel.name}
-                            </SelectItem>
-                          ))}
+                          {(() => {
+                            // 按渠道类型分组
+                            const groupedChannels: Record<string, Channel[]> = {}
+                            channels.forEach(channel => {
+                              if (!groupedChannels[channel.type]) {
+                                groupedChannels[channel.type] = []
+                              }
+                              groupedChannels[channel.type].push(channel)
+                            })
+                            
+                            return Object.entries(groupedChannels).map(([type, channels]) => (
+                              <React.Fragment key={type}>
+                                <SelectGroup>
+                                  <SelectLabel>{CHANNEL_LABELS[type as ChannelType]}</SelectLabel>
+                                  {channels.map(channel => (
+                                    <SelectItem key={channel.id} value={channel.id}>
+                                      {channel.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </React.Fragment>
+                            ))
+                          })()}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -275,4 +294,4 @@ export function EndpointDialog({
       </DialogContent>
     </Dialog>
   )
-} 
+}
